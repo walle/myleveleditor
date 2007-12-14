@@ -56,9 +56,14 @@ namespace MyLeveleditor
         {
             get
             {
-                ImageListBoxItem sel = (ImageListBoxItem)this.activeImageListbox.SelectedItem;
+                if (this.activeImageListbox.SelectedItem != null)
+                {
+                    ImageListBoxItem sel = (ImageListBoxItem)this.activeImageListbox.SelectedItem;
 
-                return sel.Text;
+                    return sel.Text;
+                }
+
+                return "";
             }
         }
 
