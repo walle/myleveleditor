@@ -1,0 +1,10 @@
+obj\Release\ResolveAssemblyReference.cache
+bin\Release\MapAPI.dll
+bin\Release\MapAPI.pdb
+obj\Release\MapAPI.dll
+obj\Release\MapAPI.pdb
+bin\Debug\MapAPI.dll
+bin\Debug\MapAPI.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\MapAPI.dll
+obj\Debug\MapAPI.pdb
