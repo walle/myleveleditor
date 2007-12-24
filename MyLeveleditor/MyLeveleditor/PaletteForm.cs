@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
+using SdlDotNet.Graphics;
+
 namespace MyLeveleditor
 {
     public partial class PaletteForm : Form
@@ -75,9 +77,34 @@ namespace MyLeveleditor
             }
         }
 
-        private void AddTab(string path, string types)
+        private void AddTab(string path, List<string> types)
         {
+            try
+            {
+                activePath = path;
+                DirectoryInfo di = new DirectoryInfo(path);
+                FileInfo[] rgFiles = di.GetFiles();
+                foreach (FileInfo fi in rgFiles)
+                {
+                    if (types.Count > 0)
+                    {
+                        if (types.Contains(fi.Extension))
+                        {
+                            this.activeImageListbox.Items.Add(new ImageListBoxItem(fi.Name, Image.FromFile(fi.FullName)));
+                        }
+                    }
+                    else
+                    {
+                        this.activeImageListbox.Items.Add(new ImageListBoxItem(fi.Name, Image.FromFile(fi.FullName)));
+                    }
 
+                    this.activeImageListbox.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         private void PaletteForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -105,37 +132,61 @@ namespace MyLeveleditor
                 this.activeImageListbox = l;
                 if (addForm.Type == "folder")
                 {
-                    try
-                    {
-                        activePath = addForm.FolderPath;
-                        List<string> types = addForm.FolderSearch;
-                        DirectoryInfo di = new DirectoryInfo(addForm.FolderPath);
-                        FileInfo[] rgFiles = di.GetFiles();
-                        foreach (FileInfo fi in rgFiles)
-                        {
-                            if (types.Count > 0)
-                            {
-                                if (types.Contains(fi.Extension))
-                                {
-                                    this.activeImageListbox.Items.Add(new ImageListBoxItem(fi.Name, Image.FromFile(fi.FullName)));
-                                }
-                            }
-                            else
-                            {
-                                this.activeImageListbox.Items.Add(new ImageListBoxItem(fi.Name, Image.FromFile(fi.FullName)));
-                            }
-
-                            this.activeImageListbox.SelectedIndex = 0;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString());
-                    }
+                    this.AddTab(addForm.FolderPath, addForm.FolderSearch);
                 }
                 else if (addForm.Type == "image")
                 {
+                    string path = Application.StartupPath + "/" + addForm.TabName + "_images";
 
+                    try
+                    {
+                        // Create a folder for the images
+                        //string path = Application.StartupPath + "/" + addForm.TabName + "_images";
+
+                        if (Directory.Exists(path))
+                        {
+                            Directory.Move(path, path + "_old");
+                        }
+
+                        Directory.CreateDirectory(path);
+
+                        // Create a surface to copy the smaller images from
+                        //Surface img = new Surface(addForm.ImagePath);
+                        Image src = Image.FromFile(addForm.ImagePath);
+                        Bitmap img = new Bitmap(src);
+
+                        //img.SaveBmp(path + "/original." + addForm.ImagePath.Substring(addForm.ImagePath.Length - 3));
+
+                        int horizontal = img.Width / addForm.TileSize;
+                        int vertical = img.Height / addForm.TileSize;
+
+                        for (int i = 0; i <= horizontal; i++)
+                        {
+                            for (int j = 0; j <= vertical; j++)
+                            {
+                                try
+                                {
+                                    //Surface surface = new Surface(new Size(addForm.TileSize, addForm.TileSize));
+                                    //surface.Blit(img, new Rectangle((i*addForm.TileSize), (j*addForm.TileSize), addForm.TileSize, addForm.TileSize));
+                                    img.Clone(new Rectangle((i * addForm.TileSize), (j * addForm.TileSize), addForm.TileSize, addForm.TileSize), System.Drawing.Imaging.PixelFormat.DontCare).Save(path + "/" + i + j + "_img" +  ".bmp");
+                                    //surface.SaveBmp(path + "/img_" + i + "_" + j + ".bmp");
+                                }
+                                catch (Exception ex)
+                                {
+                                    //MessageBox.Show(ex.Message);
+                                }
+                            }
+                        }
+
+                        img.Dispose();
+
+                        this.AddTab(path, new List<string>());
+                    }
+                    catch (Exception ex)
+                    {
+                        this.AddTab(path, new List<string>());
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
             }
         }

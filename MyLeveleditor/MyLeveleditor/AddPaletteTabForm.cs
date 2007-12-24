@@ -18,7 +18,7 @@ namespace MyLeveleditor
         private void imageBrowseButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
             openFileDialog.Filter = "Jpeg file (*.jpg)|*.jpg|Bmp file (*.bmp)|*.bmp|Png file (*.png)|*.png|All Files (*.*)|*.*";
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -109,7 +109,16 @@ namespace MyLeveleditor
         {
             get
             {
-                return this.pathTextBox.Text.Substring((pathTextBox.Text.LastIndexOf("\\") + 1));
+                if (this.Type == "folder")
+                {
+                    return this.pathTextBox.Text.Substring((pathTextBox.Text.LastIndexOf("\\") + 1));
+                }
+                else if (this.Type == "image")
+                {
+                    return this.imageTextbox.Text.Substring((imageTextbox.Text.LastIndexOf("\\") + 1));
+                }
+
+                return "";
             }
         }
 
@@ -127,7 +136,7 @@ namespace MyLeveleditor
                     return Convert.ToInt32(imageSizeTextbox.Text);
                 }
 
-                return 0;
+                return 32;
             }
         }
 

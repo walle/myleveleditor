@@ -339,7 +339,7 @@ namespace MyLeveleditor
             {
                 for (int j = 0; j <= ver; j++)
                 {
-                    mapSurface.Blit(clearImg, new Point(i * clearWidth, j * clearHeight));
+                    mapSurface.Blit(clearImg, new Point((i * clearWidth), (j * clearHeight)));
                 }
             }
 
