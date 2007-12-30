@@ -10,6 +10,7 @@ namespace MyLeveleditor
 {
     public partial class LayersForm : Form
     {
+        private int numLayers = 1;
         public event EventHandler onClose;
 
         public LayersForm()
@@ -27,6 +28,16 @@ namespace MyLeveleditor
             }
 
             this.Hide();
+        }
+
+        private void statusStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            switch (e.ClickedItem.Name)
+            {
+                case "NewLayer":
+                    imageListBox.Items.Add(new ImageListBoxItem("Layer " + numLayers++, Image.FromFile("entity_added.bmp")));
+                    break;
+            }
         }
 
 

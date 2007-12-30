@@ -28,9 +28,30 @@ namespace MyLeveleditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.imageListBox = new MyLeveleditor.ImageListBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayersForm));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.NewLayer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.imageListBox = new MyLeveleditor.ImageListBox();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewLayer});
+            this.statusStrip.Location = new System.Drawing.Point(0, 192);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(192, 22);
+            this.statusStrip.TabIndex = 1;
+            this.statusStrip.Text = "statusStrip1";
+            this.statusStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusStrip_ItemClicked);
+            // 
+            // NewLayer
+            // 
+            this.NewLayer.Image = ((System.Drawing.Image)(resources.GetObject("NewLayer.Image")));
+            this.NewLayer.Name = "NewLayer";
+            this.NewLayer.Size = new System.Drawing.Size(16, 17);
+            this.NewLayer.ToolTipText = "Insert a new layer";
             // 
             // imageListBox
             // 
@@ -43,14 +64,6 @@ namespace MyLeveleditor
             this.imageListBox.Name = "imageListBox";
             this.imageListBox.Size = new System.Drawing.Size(192, 214);
             this.imageListBox.TabIndex = 0;
-            // 
-            // statusStrip
-            // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 192);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(192, 22);
-            this.statusStrip.TabIndex = 1;
-            this.statusStrip.Text = "statusStrip1";
             // 
             // LayersForm
             // 
@@ -67,6 +80,8 @@ namespace MyLeveleditor
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Layers";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LayersForm_FormClosing);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -76,5 +91,6 @@ namespace MyLeveleditor
 
         private ImageListBox imageListBox;
         private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel NewLayer;
     }
 }
