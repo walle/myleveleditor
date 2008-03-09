@@ -130,7 +130,7 @@ namespace MyLeveleditor
                 child.mapMouseMove += new MouseEventHandler(infoForm.MapMouseMove);
                 child.mapMouseLeave += new EventHandler(infoForm.MapMouseLeave);
                 child.mapViewportChange += new ViewportEventHandler(infoForm.MapViewportChange);
-                child.mapMouseClick += new MouseEventHandler(toolboxForm.Execute);
+                child.mapMouseClick += new MouseEventHandler(toolboxForm.ExecuteClick);
                 child.onOpen += new ViewportEventHandler(infoForm.MapOpen);
                 child.onFocus += new ViewportEventHandler(infoForm.MapOpen);
                 child.onClose += new EventHandler(infoForm.MapClose);

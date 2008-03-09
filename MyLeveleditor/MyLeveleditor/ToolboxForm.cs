@@ -47,14 +47,23 @@ namespace MyLeveleditor
             handButton.BackColor = SystemColors.Control;
         }
 
-        public void Execute(object sender, MouseEventArgs e)
+        public void ExecuteClick(object sender, MouseEventArgs e)
         {
-            MainForm m = (MainForm)Owner;
+            MainForm m = (MainForm)this.Owner;
             MapEntity entity = new MapEntity();
-            entity.Filename = m.ActivePaletteImage();
-            Image img = new Bitmap(m.ActivePaletteImage());
-            entity.Size = img.Size;
-            entity.Location = e.Location;
+
+            try
+            {
+                entity.Filename = m.ActivePaletteImage();
+                Image img = new Bitmap(m.ActivePaletteImage());
+                entity.Size = img.Size;
+                entity.Location = e.Location;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             this.tool.Execute((MapForm)m.ActiveMdiChild, entity);
         }
 
