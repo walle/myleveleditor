@@ -49,22 +49,17 @@ namespace MyLeveleditor
 
         public void ExecuteClick(object sender, MouseEventArgs e)
         {
-            MainForm m = (MainForm)this.Owner;
-            MapEntity entity = new MapEntity();
+            MainForm mainForm = (MainForm)this.Owner;
+            this.tool.Execute(mainForm, e);
+        }
 
-            try
+        public void ExecuteMove(object sender, MouseEventArgs e)
+        {
+            if (this.tool.Name == "Hand")
             {
-                entity.Filename = m.ActivePaletteImage();
-                Image img = new Bitmap(m.ActivePaletteImage());
-                entity.Size = img.Size;
-                entity.Location = e.Location;
+                MainForm mainForm = (MainForm)this.Owner;
+                this.tool.Execute(mainForm, e);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-            this.tool.Execute((MapForm)m.ActiveMdiChild, entity);
         }
 
         public ToolboxTool Tool
