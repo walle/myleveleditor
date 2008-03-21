@@ -31,8 +31,8 @@ namespace MyLeveleditor
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayersForm));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.NewLayer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.RemoveLayer = new System.Windows.Forms.ToolStripStatusLabel();
             this.imageListBox = new MyLeveleditor.ImageListBox();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,7 +40,7 @@ namespace MyLeveleditor
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewLayer,
-            this.toolStripDropDownButton1});
+            this.RemoveLayer});
             this.statusStrip.Location = new System.Drawing.Point(0, 192);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(192, 22);
@@ -56,6 +56,16 @@ namespace MyLeveleditor
             this.NewLayer.Size = new System.Drawing.Size(16, 17);
             this.NewLayer.ToolTipText = "Insert a new layer";
             // 
+            // RemoveLayer
+            // 
+            this.RemoveLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.RemoveLayer.Image = ((System.Drawing.Image)(resources.GetObject("RemoveLayer.Image")));
+            this.RemoveLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RemoveLayer.IsLink = true;
+            this.RemoveLayer.Name = "RemoveLayer";
+            this.RemoveLayer.Size = new System.Drawing.Size(16, 17);
+            this.RemoveLayer.Text = "toolStripDropDownButton1";
+            // 
             // imageListBox
             // 
             this.imageListBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -67,16 +77,6 @@ namespace MyLeveleditor
             this.imageListBox.Name = "imageListBox";
             this.imageListBox.Size = new System.Drawing.Size(192, 214);
             this.imageListBox.TabIndex = 0;
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.IsLink = true;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(16, 17);
-            this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
             // 
             // LayersForm
             // 
@@ -105,6 +105,6 @@ namespace MyLeveleditor
         private ImageListBox imageListBox;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel NewLayer;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripStatusLabel RemoveLayer;
     }
 }

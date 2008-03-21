@@ -66,6 +66,8 @@ namespace MyLeveleditor
             layersForm.Location = Properties.Settings.Default.layersFormPos;
             layersForm.onClose += new EventHandler(layersForm_onClose);
             layersForm.onNewLayer += new EventHandler(layersForm_onNewLayer);
+            layersForm.onLayerChanged += new LayerChangedEventHandler(layersForm_onLayerChanged);
+            layersForm.onLayerRemoved += new LayerChangedEventHandler(layersForm_onLayerRemoved);
             layersForm.Show();
             layersToolStripMenuItem.Checked = true;
             layersForm.Owner = this;
@@ -77,12 +79,32 @@ namespace MyLeveleditor
             toolboxForm.Owner = this;
         }
 
+        void layersForm_onLayerRemoved(object sender, LayerChangedEventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                MapForm m = (MapForm)this.ActiveMdiChild;
+                m.RemoveLayer(e.LayerIndex);
+            }
+        }
+
+        void layersForm_onLayerChanged(object sender, LayerChangedEventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                MapForm m = (MapForm)this.ActiveMdiChild;
+                m.ActiveLayer = e.LayerIndex;
+            }
+        }
+
         void MainForm_MdiChildActivate(object sender, EventArgs e)
         {
             if (this.ActiveMdiChild != null)
             {
                 MapForm m = (MapForm)this.ActiveMdiChild;
                 infoForm.MapOpen(m, m.Viewport);
+                layersForm.LoadLayers(m.MapData);
+                propertiesForm.LoadData(m.MapData);
             }
         }
 
@@ -148,6 +170,7 @@ namespace MyLeveleditor
                 MapForm child = new MapForm();
                 child.MdiParent = this;
                 child.Text = newMapForm.MapName;
+                child.MapData.Name = newMapForm.MapName;
                 child.mapMouseMove += new MouseEventHandler(infoForm.MapMouseMove);
                 child.mapMouseLeave += new EventHandler(infoForm.MapMouseLeave);
                 child.mapViewportChange += new ViewportEventHandler(infoForm.MapViewportChange);
@@ -197,6 +220,7 @@ namespace MyLeveleditor
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.InitialDirectory = Environment.CurrentDirectory;
             saveFileDialog.Filter = FileTranslatorManager.BuildFileFilter();
+            saveFileDialog.FileName = this.ActiveMdiChild.Text;
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 string FileName = saveFileDialog.FileName;
@@ -204,9 +228,28 @@ namespace MyLeveleditor
                 if (FileName != "")
                 {
                     MapForm m = (MapForm)this.ActiveMdiChild;
-                    m.Text = FileName.Substring((FileName.LastIndexOf('\\')+1));
+                    m.Text = FileName.Substring(FileName.LastIndexOf("\\")+1);
                     m.MapData.Name = m.Text;
                     FileTranslatorManager.Export(FileName, m.MapData, false);
+                    FileInfo info = new FileInfo(FileName);
+                    string newDir = info.DirectoryName + "\\" + m.MapData.Name + "_files";
+                    Directory.CreateDirectory(newDir);
+                    foreach (MapAPI.MapLayer layer in m.MapData.layers)
+                    {
+                        foreach (MapAPI.MapEntity entity in layer.entites)
+                        {
+                            string newFile = newDir + "\\" + entity.Filename.Substring(entity.Filename.LastIndexOf("\\"));
+                            try
+                            {
+                                File.Copy(entity.Filename, newFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                
+                            }
+                            entity.Filename = newFile;
+                        }
+                    }
                 }
             }
         }
@@ -356,7 +399,7 @@ namespace MyLeveleditor
                         }
                         else
                         {
-                            f.Save();
+                            FileTranslatorManager.Export(f.MapData.Name, f.MapData, false);
                         }
                     }
                     else if (res == DialogResult.Cancel)

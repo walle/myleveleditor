@@ -196,17 +196,12 @@ namespace MyLeveleditor
                 MessageBox.Show(e.Message);
             }
 
+            this.lastSave = File.GetLastWriteTime(filename);
+            this.saved = true;
+            this.format = "xml";
+            this.filename = filename;
+
             this.Draw();
-        }
-
-        public void Save()
-        {
-
-        }
-
-        public void Save(string filename)
-        {
-            
         }
 
         public void SaveXml(string filename)
@@ -266,24 +261,7 @@ namespace MyLeveleditor
 
         public void AddEntity(MapEntity entity)
         {
-            if (this.showGrid)
-            {
-                int x = entity.Location.X / this.gridSize;
-                int y = entity.Location.Y / this.gridSize;
-                entity.Location = new Point(x * gridSize, y * gridSize);
-            }
-            entity.Id = entity_id++;
-            mapData[activeLayer].entites.Add(entity);
-            Draw();
-            this.saved = false;
-            urManager.Do(new EntityAddedAction(activeLayer, entity));
-            MainForm m = (MainForm)this.MdiParent;
-            m.AddHistory("Add");
-            /*Surface s = new Surface("Tiles/" + entity.Filename);
-            mapSurface.Blit(s, entity.Location);
-            wholeSurface.Blit(s, entity.Location);
-            surfaceControl.Blit(wholeSurface);
-            InvokeViewChange();*/
+            this.AddEntity(activeLayer, entity);
         }
 
         public void AddEntity(int layer, MapEntity entity)
@@ -301,40 +279,11 @@ namespace MyLeveleditor
             urManager.Do(new EntityAddedAction(layer, entity));
             MainForm m = (MainForm)this.MdiParent;
             m.AddHistory("Add");
-            /*Surface s = new Surface("Tiles/" + entity.Filename);
-            mapSurface.Blit(s, entity.Location);
-            wholeSurface.Blit(s, entity.Location);
-            surfaceControl.Blit(wholeSurface);
-            InvokeViewChange();*/
         }
 
         public void RemoveEntity(MapEntity entity)
         {
-            mapData[activeLayer].entites.Remove(entity);
-            Draw();
-            this.saved = false;
-            urManager.Do(new EntityRemovedAction(activeLayer, entity));
-            MainForm m = (MainForm)this.MdiParent;
-            m.AddHistory("Remove");
-            /*
-            int clearWidth = clearImg.Width;
-            int clearHeight = clearImg.Height;
-
-            // How many rows and columns we have to clear 
-            int hor = entity.Size.Width / clearWidth;
-            int ver = entity.Size.Height / clearHeight;
-
-            for (int i = 0; i <= hor; i++)
-            {
-                for (int j = 0; j <= ver; j++)
-                {
-                    mapSurface.Blit(clearImg, new Point(i * clearWidth, j * clearHeight));
-                }
-            }
-
-            wholeSurface.Blit(clearImg, entity.Location);
-            surfaceControl.Blit(wholeSurface);
-            InvokeViewChange();*/
+            this.RemoveEntity(activeLayer, entity);
         }
 
         public void RemoveEntity(int layer, MapEntity entity)
@@ -345,25 +294,6 @@ namespace MyLeveleditor
             urManager.Do(new EntityRemovedAction(layer, entity));
             MainForm m = (MainForm)this.MdiParent;
             m.AddHistory("Remove");
-            /*
-            int clearWidth = clearImg.Width;
-            int clearHeight = clearImg.Height;
-
-            // How many rows and columns we have to clear 
-            int hor = entity.Size.Width / clearWidth;
-            int ver = entity.Size.Height / clearHeight;
-
-            for (int i = 0; i <= hor; i++)
-            {
-                for (int j = 0; j <= ver; j++)
-                {
-                    mapSurface.Blit(clearImg, new Point(i * clearWidth, j * clearHeight));
-                }
-            }
-
-            wholeSurface.Blit(clearImg, entity.Location);
-            surfaceControl.Blit(wholeSurface);
-            InvokeViewChange();*/
         }
 
         public void RemoveEntity(Point location)
@@ -386,6 +316,12 @@ namespace MyLeveleditor
         {
             mapData.layers.Add(new MapLayer());
             this.activeLayer++;
+        }
+
+        public void RemoveLayer(int layer)
+        {
+            mapData.layers.RemoveAt(layer);
+            Draw();
         }
 
         private void Clear()
@@ -560,6 +496,12 @@ namespace MyLeveleditor
         public ViewportEventArgs Viewport
         {
             get { return new ViewportEventArgs(new Rectangle(-this.DisplayRectangle.X, -this.DisplayRectangle.Y, this.Width, this.Height), this.mapSurface); }
+        }
+
+        public int ActiveLayer
+        {
+            get { return this.activeLayer; }
+            set { this.activeLayer = value; }
         }
 
         #endregion

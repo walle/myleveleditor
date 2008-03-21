@@ -17,6 +17,11 @@ namespace MyLeveleditor
             InitializeComponent();
         }
 
+        public void LoadData(MapAPI.MapData data)
+        {
+            this.propertyGrid.SelectedObject = data;
+        }
+
         private void PropertiesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;

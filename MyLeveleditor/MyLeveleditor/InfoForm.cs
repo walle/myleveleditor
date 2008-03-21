@@ -114,6 +114,8 @@ namespace MyLeveleditor
 
         public void MapClose(object sender, EventArgs e)
         {
+            initialized = false;
+            mapSurface.Fill(SystemColors.Control);
             surface.Fill(SystemColors.Control);
             surfaceControl.Blit(surface);
         }
@@ -157,21 +159,24 @@ namespace MyLeveleditor
 
         public void ViewportChanged(Rectangle newViewport, Surface map)
         {
-            short x = (short)(newViewport.X * scaleFactor);
-            short y = (short)(newViewport.Y * scaleFactor);
-            short w = (short)(newViewport.Width * scaleFactor);
-            short h = (short)(newViewport.Height * scaleFactor);
+            if (initialized)
+            {
+                short x = (short)(newViewport.X * scaleFactor);
+                short y = (short)(newViewport.Y * scaleFactor);
+                short w = (short)(newViewport.Width * scaleFactor);
+                short h = (short)(newViewport.Height * scaleFactor);
 
-            if (w > surfaceControl.Width) { w = (short)surface.Width; }
-            if (h > surfaceControl.Height) { h = (short)surface.Height; }
+                if (w > surfaceControl.Width) { w = (short)surface.Width; }
+                if (h > surfaceControl.Height) { h = (short)surface.Height; }
 
-            mapViewport = new Box(new Point(x, y), new Point(x + w - 1, y + h - 1));
+                mapViewport = new Box(new Point(x, y), new Point(x + w - 1, y + h - 1));
 
-            mapSurface = map;
+                mapSurface = map;
 
-            if (map != null) { surface = map.CreateScaledSurface(scaleFactor, true); }
-            surface.Draw(mapViewport, Color.Red);
-            this.surfaceControl.Blit(surface);
+                if (map != null) { surface = map.CreateScaledSurface(scaleFactor, true); }
+                surface.Draw(mapViewport, Color.Red);
+                this.surfaceControl.Blit(surface);
+            }
         }
 
         private void InfoForm_FormClosing(object sender, FormClosingEventArgs e)
