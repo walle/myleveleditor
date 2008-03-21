@@ -1,0 +1,5 @@
+D:\svnCheckouts\MyLeveleditor\MyLeveleditor\MapAPI\bin\Debug\MapAPI.dll
+D:\svnCheckouts\MyLeveleditor\MyLeveleditor\MapAPI\bin\Debug\MapAPI.pdb
+D:\svnCheckouts\MyLeveleditor\MyLeveleditor\MapAPI\obj\Debug\ResolveAssemblyReference.cache
+D:\svnCheckouts\MyLeveleditor\MyLeveleditor\MapAPI\obj\Debug\MapAPI.dll
+D:\svnCheckouts\MyLeveleditor\MyLeveleditor\MapAPI\obj\Debug\MapAPI.pdb

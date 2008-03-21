@@ -11,6 +11,8 @@ namespace MapAPI
         private string author = "undefined";
         private string backgroundImage = "undefined";
         private string backgroundMusic = "undefined";
+        private string width = "undefined";
+        private string height = "undefined";
         public List<MapLayer> layers = new List<MapLayer>();
 
         public string Name
@@ -41,6 +43,18 @@ namespace MapAPI
         {
             get { return this.backgroundMusic; }
             set { this.backgroundMusic = value; }
+        }
+
+        public string Width
+        {
+            get { return this.width; }
+            set { this.width = value; }
+        }
+
+        public string Height
+        {
+            get { return this.height; }
+            set { this.height = value; }
         }
 
 	    public MapLayer this[int index]

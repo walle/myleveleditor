@@ -12,6 +12,7 @@ namespace MyLeveleditor
     {
         private int numLayers = 1;
         public event EventHandler onClose;
+        public event EventHandler onNewLayer;
 
         public LayersForm()
         {
@@ -35,7 +36,11 @@ namespace MyLeveleditor
             switch (e.ClickedItem.Name)
             {
                 case "NewLayer":
-                    imageListBox.Items.Add(new ImageListBoxItem("Layer " + numLayers++, Image.FromFile("entity_added.bmp")));
+                    if (onNewLayer != null)
+                    {
+                        imageListBox.Items.Add(new ImageListBoxItem("Layer " + numLayers++, Image.FromFile("entity_added.bmp")));
+                        onNewLayer.Invoke(this, new EventArgs());
+                    }
                     break;
             }
         }

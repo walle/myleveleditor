@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml;
 using SdlDotNet.Graphics;
 using SdlDotNet.Input;
 using SdlDotNet.Graphics.Primitives;
@@ -80,6 +81,9 @@ namespace MyLeveleditor
             mapSurface = new Surface(x, y);
             wholeSurface = new Surface(x, y);
 
+            this.mapData.Width = x.ToString();
+            this.mapData.Height = y.ToString();
+
             //Clear();
             Draw();
             CenterMap();
@@ -141,6 +145,58 @@ namespace MyLeveleditor
         public void Open(string filename)
         {
             
+        }
+
+        public void OpenXml(string filename)
+        {
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(filename);
+
+                XmlNode name = doc.GetElementsByTagName("name")[0];
+                XmlNode version = doc.GetElementsByTagName("version")[0];
+                XmlNode author = doc.GetElementsByTagName("author")[0];
+                XmlNode backgroundImage = doc.GetElementsByTagName("backgroundImage")[0];
+                XmlNode backgroundMusic = doc.GetElementsByTagName("backgroundMusic")[0];
+                XmlNode width = doc.GetElementsByTagName("width")[0];
+                XmlNode height = doc.GetElementsByTagName("height")[0];
+
+                mapData.Name = name.InnerText;
+                mapData.Version = version.InnerText;
+                mapData.Author = author.InnerText;
+                mapData.BackgroundImage = backgroundImage.InnerText;
+                mapData.BackgroundMusic = backgroundMusic.InnerText;
+                mapData.Width = width.InnerText;
+                mapData.Height = height.InnerText;
+
+                XmlNodeList layers = doc.GetElementsByTagName("layer");
+
+                foreach (XmlNode layer in layers)
+                {
+                    XmlNodeList entities = layer.ChildNodes;
+
+                    mapData.layers.Add(new MapLayer());
+
+                    foreach (XmlNode entity in entities)
+                    {
+                        MapEntity en = new MapEntity();
+                        en.Id = Convert.ToInt32(entity["id"].InnerText);
+                        en.Filename = entity["filename"].InnerText;
+                        en.Location = new Point(Convert.ToInt32(entity["location"]["x"].InnerText), Convert.ToInt32(entity["location"]["y"].InnerText));
+                        en.Size = new Size(Convert.ToInt32(entity["size"]["width"].InnerText), Convert.ToInt32(entity["size"]["height"].InnerText));
+                        en.Script = entity["script"].InnerText;
+
+                        mapData[activeLayer].entites.Add(en);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+            this.Draw();
         }
 
         public void Save()
@@ -326,6 +382,12 @@ namespace MyLeveleditor
             mapData[activeLayer].entites.RemoveAll(delegate(MapEntity e) { return e.Id == id; });
         }
 
+        public void AddLayer()
+        {
+            mapData.layers.Add(new MapLayer());
+            this.activeLayer++;
+        }
+
         private void Clear()
         {
             int clearWidth = clearImg.Width;
@@ -409,7 +471,7 @@ namespace MyLeveleditor
             }
         }
 
-        private void InvokeViewChange()
+        public void InvokeViewChange()
         {
             if (mapViewportChange != null)
             {
@@ -493,6 +555,11 @@ namespace MyLeveleditor
         public MapData MapData
         {
             get { return this.mapData; }
+        }
+
+        public ViewportEventArgs Viewport
+        {
+            get { return new ViewportEventArgs(new Rectangle(-this.DisplayRectangle.X, -this.DisplayRectangle.Y, this.Width, this.Height), this.mapSurface); }
         }
 
         #endregion

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+<name>testmap5.xml</name>
+<version>undefined</version>
+<author>undefined</author>
+<backgroundImage>undefined</backgroundImage>
+<backgroundMusic>undefined</backgroundMusic>
+<width>300</width>
+<height>150</height>
+<layer>
+<entity>
+<id>1</id>
+<filename>D:\famfamfam_silk_icons_v013\icons\application_delete.png</filename>
+<location><x>192</x><y>96</y></location>
+<size><width>16</width><height>16</height></size>
+<script>undefined</script>
+</entity>
+</layer>
+</map>

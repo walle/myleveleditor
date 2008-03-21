@@ -26,6 +26,8 @@ namespace MyLeveleditor
 
             InitializePlugins();
 
+            this.MdiChildActivate += new EventHandler(MainForm_MdiChildActivate);
+
             // Show the info form
             infoForm = new InfoForm();
             infoForm.Location = Properties.Settings.Default.infoFormPos;
@@ -63,6 +65,7 @@ namespace MyLeveleditor
             layersForm = new LayersForm();
             layersForm.Location = Properties.Settings.Default.layersFormPos;
             layersForm.onClose += new EventHandler(layersForm_onClose);
+            layersForm.onNewLayer += new EventHandler(layersForm_onNewLayer);
             layersForm.Show();
             layersToolStripMenuItem.Checked = true;
             layersForm.Owner = this;
@@ -72,6 +75,24 @@ namespace MyLeveleditor
             toolboxForm.Location = Properties.Settings.Default.toolboxFormPos;
             toolboxForm.Show();
             toolboxForm.Owner = this;
+        }
+
+        void MainForm_MdiChildActivate(object sender, EventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                MapForm m = (MapForm)this.ActiveMdiChild;
+                infoForm.MapOpen(m, m.Viewport);
+            }
+        }
+
+        void layersForm_onNewLayer(object sender, EventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                MapForm m = (MapForm)this.ActiveMdiChild;
+                m.AddLayer();
+            }
         }
 
         void layersForm_onClose(object sender, EventArgs e)
@@ -143,19 +164,38 @@ namespace MyLeveleditor
         private void OpenFile(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            openFileDialog.Filter = FileTranslatorManager.BuildFileFilter();
             if (openFileDialog.ShowDialog(this) == DialogResult.OK)
             {
                 string FileName = openFileDialog.FileName;
                 // TODO: Add code here to open the file.
+                if (FileName != "")
+                {
+                    MapForm child = new MapForm();
+                    child.MdiParent = this;
+                    child.mapMouseMove += new MouseEventHandler(infoForm.MapMouseMove);
+                    child.mapMouseLeave += new EventHandler(infoForm.MapMouseLeave);
+                    child.mapViewportChange += new ViewportEventHandler(infoForm.MapViewportChange);
+                    child.mapMouseClick += new MouseEventHandler(toolboxForm.ExecuteClick);
+                    child.mapMouseMove += new MouseEventHandler(toolboxForm.ExecuteMove);
+                    child.onOpen += new ViewportEventHandler(infoForm.MapOpen);
+                    child.onFocus += new ViewportEventHandler(infoForm.MapOpen);
+                    child.onClose += new EventHandler(infoForm.MapClose);
+    
+                    FileTranslatorManager.Import(FileName, child.MapData, false);
+
+                    child.Text = child.MapData.Name;
+                    child.SetMapSize(Convert.ToInt32(child.MapData.Width), Convert.ToInt32(child.MapData.Height));
+                    child.Show();
+                }
             }
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            saveFileDialog.InitialDirectory = Environment.CurrentDirectory;
             saveFileDialog.Filter = FileTranslatorManager.BuildFileFilter();
             if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
             {
@@ -164,6 +204,8 @@ namespace MyLeveleditor
                 if (FileName != "")
                 {
                     MapForm m = (MapForm)this.ActiveMdiChild;
+                    m.Text = FileName.Substring((FileName.LastIndexOf('\\')+1));
+                    m.MapData.Name = m.Text;
                     FileTranslatorManager.Export(FileName, m.MapData, false);
                 }
             }

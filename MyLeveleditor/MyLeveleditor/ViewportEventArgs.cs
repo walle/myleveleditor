@@ -6,7 +6,7 @@ using SdlDotNet.Graphics;
 
 namespace MyLeveleditor
 {
-    class ViewportEventArgs : EventArgs
+    public class ViewportEventArgs : EventArgs
     {
         Rectangle rect;
         Surface surf;
