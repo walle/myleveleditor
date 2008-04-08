@@ -208,7 +208,7 @@ namespace MyLeveleditor
     
                     FileTranslatorManager.Import(FileName, child.MapData, false);
 
-                    child.Text = child.MapData.Name;
+                    child.Text = FileName.Substring(FileName.LastIndexOf("\\") + 1);
                     child.SetMapSize(Convert.ToInt32(child.MapData.Width), Convert.ToInt32(child.MapData.Height));
                     child.Show();
                 }
@@ -229,7 +229,6 @@ namespace MyLeveleditor
                 {
                     MapForm m = (MapForm)this.ActiveMdiChild;
                     m.Text = FileName.Substring(FileName.LastIndexOf("\\")+1);
-                    m.MapData.Name = m.Text;
                     FileTranslatorManager.Export(FileName, m.MapData, false);
                     FileInfo info = new FileInfo(FileName);
                     string newDir = info.DirectoryName + "\\" + m.MapData.Name + "_files";
@@ -238,7 +237,7 @@ namespace MyLeveleditor
                     {
                         foreach (MapAPI.MapEntity entity in layer.entites)
                         {
-                            string newFile = newDir + "\\" + entity.Filename.Substring(entity.Filename.LastIndexOf("\\"));
+                            string newFile = newDir + "\\" + entity.Filename.Substring(entity.Filename.LastIndexOf("\\") + 1);
                             try
                             {
                                 File.Copy(entity.Filename, newFile);

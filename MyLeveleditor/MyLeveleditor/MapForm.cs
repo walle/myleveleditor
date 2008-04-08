@@ -125,8 +125,15 @@ namespace MyLeveleditor
             {
                 foreach (MapEntity e in l.entites)
                 {
-                    Surface s = new Surface(e.Filename);
-                    mapSurface.Blit(s, e.Location);
+                    try
+                    {
+                        Surface s = new Surface(e.Filename);
+                        mapSurface.Blit(s, e.Location);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
                 }
             }
 
@@ -505,5 +512,21 @@ namespace MyLeveleditor
         }
 
         #endregion
+
+        private void MapForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                surfaceControl.Cursor = Cursors.Hand;
+            }
+        }
+
+        private void MapForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                surfaceControl.Cursor = Cursors.Default;
+            }
+        }
     }
 }

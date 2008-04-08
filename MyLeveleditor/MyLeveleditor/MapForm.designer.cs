@@ -120,8 +120,10 @@ namespace MyLeveleditor
             this.Name = "MapForm";
             this.ShowInTaskbar = false;
             this.Text = "MapWindow";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MapForm_FormClosing);
             this.Load += new System.EventHandler(this.MapForm_Load);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MapForm_KeyUp);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MapForm_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MapForm_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.surfaceControl)).EndInit();
             this.mapContextMenuStrip.ResumeLayout(false);
             this.surfacePanel.ResumeLayout(false);
